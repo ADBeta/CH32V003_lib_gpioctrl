@@ -4,9 +4,9 @@ gpiotest.elf:     file format elf32-littleriscv
 SYMBOL TABLE:
 00000000 l    d  .init	00000000 .init
 000000a0 l    d  .text	00000000 .text
-00000238 l    d  .fini	00000000 .fini
+00000210 l    d  .fini	00000000 .fini
 20000000 l    d  .dalign	00000000 .dalign
-00000238 l    d  .dlalign	00000000 .dlalign
+00000210 l    d  .dlalign	00000000 .dlalign
 20000000 l    d  .data	00000000 .data
 20000000 l    d  .bss	00000000 .bss
 00000000 l    d  .riscv.attributes	00000000 .riscv.attributes
@@ -36,7 +36,6 @@ SYMBOL TABLE:
 0000011a g     F .text	00000002 ADC1_IRQHandler
 20000000 g       .bss	00000000 _ebss
 0000011a g     F .text	00000002 DMA1_Channel7_IRQHandler
-00002136  w      .debug_info	00000000 .hidden lib_GPIOCTRL.c.51598097
 0000011a g     F .text	00000002 I2C1_EV_IRQHandler
 0000011a g     F .text	00000002 DMA1_Channel6_IRQHandler
 0000011a g     F .text	00000002 RCC_IRQHandler
@@ -45,12 +44,13 @@ SYMBOL TABLE:
 0000011a g     F .text	00000002 DefaultIRQHandler
 20000000 g       .dalign	00000000 _data_vma
 0000011c g     F .text	0000000e NMI_RCC_CSS_IRQHandler
-0000018c g     F .text	000000aa main
-000010d5  w      .debug_info	00000000 .hidden ch32v003fun.c.30b4357d
+0000018c g     F .text	00000084 main
+00000f1e  w      .debug_info	00000000 .hidden ch32v003fun.c.30b4357d
 0000011a g     F .text	00000002 DMA1_Channel5_IRQHandler
 0000012a g     F .text	00000062 SystemInit
 00000000 g       .init	00000000 _sinit
 0000011a g     F .text	00000002 DMA1_Channel3_IRQHandler
+00001fce  w      .debug_info	00000000 .hidden lib_GPIOCTRL.c.83c12b6d
 0000011a g     F .text	00000002 TIM1_UP_IRQHandler
 0000011a g     F .text	00000002 WWDG_IRQHandler
 0000011a g     F .text	00000002 TIM2_IRQHandler
@@ -58,8 +58,8 @@ SYMBOL TABLE:
 0000011a g     F .text	00000002 SW_Handler
 0000011a g     F .text	00000002 TIM1_BRK_IRQHandler
 20000000 g       .data	00000000 _edata
-00000238 g       .dlalign	00000000 _data_lma
-00001eab  w      .debug_info	00000000 .hidden gpiotest.c.d9461959
+00001cf4  w      .debug_info	00000000 .hidden gpiotest.c.346b3bba
+00000210 g       .dlalign	00000000 _data_lma
 0000011a g     F .text	00000002 DMA1_Channel2_IRQHandler
 000000a0 g     F .text	0000007a handle_reset
 0000011a g     F .text	00000002 FLASH_IRQHandler

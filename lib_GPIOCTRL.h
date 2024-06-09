@@ -1,3 +1,13 @@
+/******************************************************************************
+* lib_GPIOCTRL
+* A runtime-capable GPIO Library, with Digital Read/Write and
+* TODO: Analog Read & Analog Write/PWM
+*
+*
+* See GitHub for details: https://github.com/ADBeta/CH32V003_lib_GPIOCTRL
+*
+* ADBeta (c)    Jun 2024    Ver 0.5.0
+******************************************************************************/
 #ifndef LIB_GPIOCTRL_H
 #define LIB_GPIOCTRL_H
 
@@ -5,9 +15,9 @@
 #include <stddef.h>
 
 /*** GPIO Pin Enumeration ****************************************************/
-// This enum is used as binary data for pin and port addressing. 
-// 0x[PIN][PORT] - 0x 0603 6th pin of port 4 (PORTD)
-// NOTE: Little-Endian Architecture means value in memory is [PORT][PIN] order
+/// @breif This enum is used as binary data for pin and port addressing. 
+/// 0x[PIN][PORT] - 0x 0603 6th pin of port 4 (PORTD)
+/// NOTE: Little-Endian Architecture means value in memory is [PORT][PIN] order
 typedef enum {
 	GPIO_PA0      = 0x0000,
 	GPIO_PA1      = 0x0100, 
@@ -48,21 +58,25 @@ typedef enum {
 
 
 /*** GPIO Pin Mode Enumeration ***********************************************/
+/// @breif GPIO Pin Mode data. The lower nibble is the raw binary data for the
+/// [R32_GPIOx_CFGLR] Register. The upper nibble is used for additional flags 
 typedef enum {
-	INPUT_ANALOG       = 0b0000,
-	INPUT_FLOATING     = 0b0100,
-	INPUT_PP           = 0b1000,
+	INPUT_ANALOG       = 0x00,
+	INPUT_FLOATING     = 0x04,
+	// Mapped to INPUT_PP, Sets OUTDR based on the upper nibble
+	INPUT_PULLUP       = 0x18,
+	INPUT_PULLDOWN     = 0x08,
 	//
-	OUTPUT_10MHZ_PP    = 0b0001,
-	OUTPUT_10MHZ_OD    = 0b0101,
+	OUTPUT_10MHZ_PP    = 0x01,
+	OUTPUT_10MHZ_OD    = 0x05,
 	//
-	OUTPUT_2MHZ_PP     = 0b0010,
-	OUTPUT_2MHZ_OD     = 0b0110,
-
+	OUTPUT_2MHZ_PP     = 0x02,
+	OUTPUT_2MHZ_OD     = 0x06,
 } gpio_mode_t;
 
 
 /*** GPIO Output State Enumerations ******************************************/
+/// @breif GPIO Pin State Enum, simple implimentation of a HIGH/LOW System
 typedef enum {
 	GPIO_LOW     = 0x00,
 	GPIO_HIGH    = 0x01,
@@ -70,6 +84,8 @@ typedef enum {
 
 
 /*** Registers for GPIO Port *************************************************/
+/// @breif GPIO Port Register, Directly Maps to Memory starting at 
+/// [R32_GPIOx_CFGLR] for each PORT Respectively
 typedef struct {
 	volatile uint32_t CFGLR;  // Configuration Register (lower)
 	volatile uint32_t CFGHR;  // Configuration Register (upper)
@@ -83,6 +99,8 @@ typedef struct {
 
 /*** Register Address Definitions ********************************************/
 #define RCC_APB2PCENR ((volatile uint32_t *)0x40021018)
+#define APB2PCENR_AFIO   0x01
+#define APB2PCENR_IOPxEN 0x04
 
 #define PORTA_GPIO_REGISTER_BASE 0x40010800
 // NOTE: PORTB is not available for the CH32V003.
@@ -96,40 +114,30 @@ typedef struct {
 #define GPIO_PORTC ((gpio_port_reg_t *)PORTC_GPIO_REGISTER_BASE)
 #define GPIO_PORTD ((gpio_port_reg_t *)PORTD_GPIO_REGISTER_BASE)
 
-
-// GPIO Port Array for easy addressing
-// NOTE: Only 3 PORTs are usable in the CH32V003, 4 for other MCUs
+/// @breif The GPIO Ports are places into an array for easy indexing in the
+/// GPIO Functions
+/// NOTE: Only 3 PORTs are usable in the CH32V003, 4 for other MCUs
 extern gpio_port_reg_t *gpio_port_reg[4]; 
 
-// Sets the GPIO Mode TODO:
-static inline void gpio_set_mode(gpio_pin_t pin, gpio_mode_t mode)
-{
-	// TODO: Any pin over 8 needs to change CFGHR
-	
-	// Make array of uint8_t from [pin] enum. See definition for details
-	uint8_t *byte = (uint8_t *)&pin;
-	
-	// Set the RCC Register to enable clock on the specified port
-	//                 AFIO    IOPxEN
-	*RCC_APB2PCENR |= (0x01 | (0x04 << byte[0]));
 
-	// Clear then set the GPIO Config Register
-	gpio_port_reg[ byte[0] ]->CFGLR &=        ~(0x0F << (4 * byte[1]));
-	gpio_port_reg[ byte[0] ]->CFGLR |= (uint8_t)mode << (4 * byte[1]);
-}
+/*** GPIO Mode Setting *******************************************************/
+/// @breif Sets the Config and other needed Registers for a passed pin and mode
+/// @param gpio_pin_t pin, the GPIO Pin & Port Variable (e.g GPIO_PD6)
+/// @param gpio_mode_t mode, the GPIO Mode Variable (e.g OUTPUT_10MHZ_PP)
+/// @return None
+void gpio_set_mode(const gpio_pin_t pin, const gpio_mode_t mode);
 
-// NOTE: This is the fastest code possible I've found. branch-free is slower
-__attribute__((always_inline)) static void inline gpio_digital_write(gpio_pin_t pin, gpio_state_t state)
-{
-	// Make array of uint8_t from [pin] enum. See definition for details
-	uint8_t *byte = (uint8_t *)&pin;
+/*** Digital Write/Read ******************************************************/
+/// @breif Sets the OUTDR Register for the passed Pin
+/// @param gpio_pin_t pin, the GPIO Pin & Port Variable (e.g GPIO_PD6)
+/// @param gpio_state_t state, GPIO State to be set (e.g GPIO_HIGH)
+/// @return None
+void gpio_digital_write(const gpio_pin_t pin, const gpio_state_t state);
 
-	if(state == GPIO_HIGH)
-		gpio_port_reg[ byte[0] ]->OUTDR |=  (0x01 << (byte[1]));
-	if(state == GPIO_LOW)
-		gpio_port_reg[ byte[0] ]->OUTDR &= ~(0x01 << (byte[1]));
-}
-
+/// @breif Reads the INDR Register of the specified pin and returns state
+/// @param gpio_pin_t pin, the GPIO Pin & Port Variable (e.g GPIO_PD6)
+/// @return gpio_state_t, the current state of the pin, (e.g GPIO_HIGH)
+gpio_state_t gpio_digital_read(const gpio_pin_t pin);
 
 
 #endif

@@ -18,40 +18,14 @@ int main()
 	SystemInit();
 
 	gpio_set_mode(GPIO_PD6, OUTPUT_10MHZ_PP); 
-
+	gpio_set_mode(GPIO_PC0, INPUT_PULLDOWN); 
 
 	while(1)
 	{
-		/*
-		uint8_t val = (uint8_t)gpio_digital_read(GPIO_PD6);
-		printf("%d val\n", val);
+		uint8_t val = gpio_digital_read(GPIO_PC0);
+		
+		gpio_digital_write(GPIO_PD6, val);
 
 		Delay_Ms(250);
-		*/
-
-
-
-		gpio_digital_write(GPIO_PD6, GPIO_HIGH);
-		gpio_digital_write(GPIO_PD6, GPIO_LOW);
-
-		gpio_digital_write(GPIO_PD6, GPIO_HIGH);
-		gpio_digital_write(GPIO_PD6, GPIO_LOW);
-
-		gpio_digital_write(GPIO_PD6, GPIO_HIGH);
-		gpio_digital_write(GPIO_PD6, GPIO_LOW);
-
-		gpio_digital_write(GPIO_PD6, GPIO_HIGH);
-		gpio_digital_write(GPIO_PD6, GPIO_LOW);
-
-		gpio_digital_write(GPIO_PD6, GPIO_HIGH);
-		gpio_digital_write(GPIO_PD6, GPIO_LOW);
-
-		gpio_digital_write(GPIO_PD6, GPIO_HIGH);
-		gpio_digital_write(GPIO_PD6, GPIO_LOW);
-
-		gpio_digital_write(GPIO_PD6, GPIO_HIGH);
-		gpio_digital_write(GPIO_PD6, GPIO_LOW);
-
-
 	}
 }
