@@ -1,0 +1,59 @@
+Analog Read Registers etc
+
+###############################################################################
+	INPUTS:
+		Vref -> ADC_IN8
+		Vcal -> ADC_IN9
+
+###############################################################################
+	ACD_CTRLR2 -> ADON bit, 1=ON
+
+	ADC Sample is done via HBBUS CLK. ADCLK is configured via
+	RCC_CFGR0 -> ADCPRE : ADC Prescaler clock
+
+###############################################################################
+
+	Rule Group:: Regular mode
+	ADC_RSQRx Registers. including converstion samples per read
+
+	Injection Group:: High Priority (interrupted?) mode
+	ADC_ISRQ Register, including samples per read etc 
+
+###############################################################################
+	Calibration mode
+	Set ADC_CTRL2 -> RSTCAL to 1, wait for CPU to clear it to 0 again
+	Calibration data is then stored in ADC_RDATAR
+
+	ACD **MUST** be powered on for at least 2 cycles before Calibrating.
+	Do a cal when ADC is powered on 
+	`if(ADCON == 0) ADCON = 1; ACD_RSTCAL;`
+
+###############################################################################
+	Sampling time is defined by number of Clk cycles each sample takes, * the
+	ACD CLK Frequency.
+	`TIME_CONV = SAMPLE_TIME + (11 * ADC_CLK)'
+
+	Set SMPx[2:0] in ADC_SAMPTR1 and ADC_SAMPTR2 to configure this
+
+###############################################################################
+	Can set DMA So when the data conversion is done, data in ADC_RDATAR Register
+	is moved automatically to the users choice of mem address
+
+###############################################################################
+	Data can be left or right aligned in 10bit mode
+	ADC_CTLR2 -> ALIGN
+
+###############################################################################
+	Data is output to ADC_RDATAR Register for Rule Group
+	Data is output to ADC_IDATAR Register in Injection Group, minus offset from
+	ADC_IOFRx Register
+
+###############################################################################
+	ADC Conversions can be triggered by interrupts - 
+	ADC_CTLR2 -> EXTTRIG or JEXTTRIG Bits, for Rule or Injection Group respectively
+
+
+
+
+
+Pick up from page 75

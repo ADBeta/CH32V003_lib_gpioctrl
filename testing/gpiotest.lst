@@ -62,7 +62,7 @@ Disassembly of section .text:
   da:	c110                	sw	a2,0(a0)
   dc:	0511                	addi	a0,a0,4
   de:	feb54ee3          	blt	a0,a1,da <handle_reset+0x3a>
-  e2:	21000513          	li	a0,528
+  e2:	1f400513          	li	a0,500
   e6:	20000597          	auipc	a1,0x20000
   ea:	f1a58593          	addi	a1,a1,-230 # 20000000 <_data_vma>
   ee:	20000617          	auipc	a2,0x20000
@@ -97,7 +97,7 @@ Disassembly of section .text:
  132:	400217b7          	lui	a5,0x40021
  136:	01080737          	lui	a4,0x1080
  13a:	0007a223          	sw	zero,4(a5) # 40021004 <_eusrstack+0x20020804>
- 13e:	08170713          	addi	a4,a4,129 # 1080081 <lib_GPIOCTRL.c.83c12b6d+0x107e0b3>
+ 13e:	08170713          	addi	a4,a4,129 # 1080081 <lib_GPIOCTRL.c.83c12b6d+0x107e159>
  142:	c398                	sw	a4,0(a5)
  144:	009f0737          	lui	a4,0x9f0
  148:	c798                	sw	a4,8(a5)
@@ -140,77 +140,58 @@ int main()
 	
 	// Set the RCC Register to enable clock on the specified port
 	*RCC_APB2PCENR |= (APB2PCENR_AFIO | (APB2PCENR_IOPxEN << byte[0]));
- 192:	400216b7          	lui	a3,0x40021
- 196:	4e9c                	lw	a5,24(a3)
+ 192:	40021737          	lui	a4,0x40021
+ 196:	4f1c                	lw	a5,24(a4)
 
 	// Clear then set the GPIO Config Register
 	gpio_port_reg[ byte[0] ]->CFGLR &=        ~(0x0F  << (4 * byte[1]));
- 198:	f10005b7          	lui	a1,0xf1000
- 19c:	15fd                	addi	a1,a1,-1 # f0ffffff <_eusrstack+0xd0fff7ff>
+ 198:	400116b7          	lui	a3,0x40011
+ 19c:	40068693          	addi	a3,a3,1024 # 40011400 <_eusrstack+0x20010c00>
 	*RCC_APB2PCENR |= (APB2PCENR_AFIO | (APB2PCENR_IOPxEN << byte[0]));
- 19e:	0217e793          	ori	a5,a5,33
- 1a2:	ce9c                	sw	a5,24(a3)
+ 1a0:	0217e793          	ori	a5,a5,33
+ 1a4:	cf1c                	sw	a5,24(a4)
 	gpio_port_reg[ byte[0] ]->CFGLR &=        ~(0x0F  << (4 * byte[1]));
- 1a4:	400117b7          	lui	a5,0x40011
- 1a8:	40078793          	addi	a5,a5,1024 # 40011400 <_eusrstack+0x20010c00>
- 1ac:	4390                	lw	a2,0(a5)
- 1ae:	40011737          	lui	a4,0x40011
-{
-	// Make array of uint8_t from [pin] enum. See definition for details
+ 1a6:	4290                	lw	a2,0(a3)
+ 1a8:	100005b7          	lui	a1,0x10000
+ 1ac:	fff58513          	addi	a0,a1,-1 # fffffff <lib_GPIOCTRL.c.83c12b6d+0xfffe0d7>
+ 1b0:	8e69                	and	a2,a2,a0
+ 1b2:	c290                	sw	a2,0(a3)
+	gpio_port_reg[ byte[0] ]->CFGLR |=  (mode & 0x0F) << (4 * byte[1]);
+ 1b4:	4290                	lw	a2,0(a3)
+	gpio_port_reg[ byte[0] ]->CFGLR &=        ~(0x0F  << (4 * byte[1]));
+ 1b6:	400117b7          	lui	a5,0x40011
+	gpio_port_reg[ byte[0] ]->CFGLR |=  (mode & 0x0F) << (4 * byte[1]);
+ 1ba:	8e4d                	or	a2,a2,a1
+ 1bc:	c290                	sw	a2,0(a3)
+	*RCC_APB2PCENR |= (APB2PCENR_AFIO | (APB2PCENR_IOPxEN << byte[0]));
+ 1be:	4f14                	lw	a3,24(a4)
+ 1c0:	0116e693          	ori	a3,a3,17
+ 1c4:	cf14                	sw	a3,24(a4)
+	gpio_port_reg[ byte[0] ]->CFGLR &=        ~(0x0F  << (4 * byte[1]));
+ 1c6:	4398                	lw	a4,0(a5)
+ 1c8:	9b41                	andi	a4,a4,-16
+ 1ca:	c398                	sw	a4,0(a5)
+	gpio_port_reg[ byte[0] ]->CFGLR |=  (mode & 0x0F) << (4 * byte[1]);
+ 1cc:	4398                	lw	a4,0(a5)
+ 1ce:	00876713          	ori	a4,a4,8
+ 1d2:	c398                	sw	a4,0(a5)
 	uint8_t *byte = (uint8_t *)&pin;
 
-	// If the Input Reg has the wanted bit set, return HIGH
-	if( (gpio_port_reg[ byte[0] ]->INDR & (0x01 << byte[1])) != 0x00 ) 
- 1b2:	40011537          	lui	a0,0x40011
-	gpio_port_reg[ byte[0] ]->CFGLR &=        ~(0x0F  << (4 * byte[1]));
- 1b6:	8e6d                	and	a2,a2,a1
- 1b8:	c390                	sw	a2,0(a5)
-	gpio_port_reg[ byte[0] ]->CFGLR |=  (mode & 0x0F) << (4 * byte[1]);
- 1ba:	4390                	lw	a2,0(a5)
- 1bc:	010005b7          	lui	a1,0x1000
- 1c0:	8e4d                	or	a2,a2,a1
- 1c2:	c390                	sw	a2,0(a5)
-	*RCC_APB2PCENR |= (APB2PCENR_AFIO | (APB2PCENR_IOPxEN << byte[0]));
- 1c4:	4e90                	lw	a2,24(a3)
-#endif
-
-void DelaySysTick( uint32_t n )
-{
-#ifdef CH32V003
-	uint32_t targend = SysTick->CNT + n;
- 1c6:	e000f5b7          	lui	a1,0xe000f
- 1ca:	01166613          	ori	a2,a2,17
- 1ce:	ce90                	sw	a2,24(a3)
-	gpio_port_reg[ byte[0] ]->CFGLR &=        ~(0x0F  << (4 * byte[1]));
- 1d0:	4314                	lw	a3,0(a4)
- 1d2:	9ac1                	andi	a3,a3,-16
- 1d4:	c314                	sw	a3,0(a4)
-	gpio_port_reg[ byte[0] ]->CFGLR |=  (mode & 0x0F) << (4 * byte[1]);
- 1d6:	4314                	lw	a3,0(a4)
- 1d8:	0086e693          	ori	a3,a3,8
- 1dc:	c314                	sw	a3,0(a4)
-		gpio_port_reg[ byte[0] ]->OUTDR &= ~(0x01 << byte[1]);
- 1de:	4754                	lw	a3,12(a4)
- 1e0:	9af9                	andi	a3,a3,-2
- 1e2:	c754                	sw	a3,12(a4)
- 1e4:	00b72737          	lui	a4,0xb72
- 1e8:	b0070713          	addi	a4,a4,-1280 # b71b00 <lib_GPIOCTRL.c.83c12b6d+0xb6fb32>
-	if( (gpio_port_reg[ byte[0] ]->INDR & (0x01 << byte[1])) != 0x00 ) 
- 1ec:	4514                	lw	a3,8(a0)
- 1ee:	8a85                	andi	a3,a3,1
- 1f0:	ce81                	beqz	a3,208 <main+0x7c>
+	if(state == GPIO_HIGH)
 		gpio_port_reg[ byte[0] ]->OUTDR |=  (0x01 << byte[1]);
- 1f2:	47d4                	lw	a3,12(a5)
- 1f4:	0406e693          	ori	a3,a3,64
+	if(state == GPIO_LOW)
 		gpio_port_reg[ byte[0] ]->OUTDR &= ~(0x01 << byte[1]);
- 1f8:	c7d4                	sw	a3,12(a5)
- 1fa:	4590                	lw	a2,8(a1)
- 1fc:	963a                	add	a2,a2,a4
-	while( ((int32_t)( SysTick->CNT - targend )) < 0 );
- 1fe:	4594                	lw	a3,8(a1)
- 200:	8e91                	sub	a3,a3,a2
- 202:	fe06cee3          	bltz	a3,1fe <main+0x72>
- 206:	b7dd                	j	1ec <main+0x60>
- 208:	47d4                	lw	a3,12(a5)
- 20a:	fbf6f693          	andi	a3,a3,-65
- 20e:	b7ed                	j	1f8 <main+0x6c>
+ 1d4:	47d8                	lw	a4,12(a5)
+ 1d6:	9b79                	andi	a4,a4,-2
+ 1d8:	c7d8                	sw	a4,12(a5)
+		gpio_port_reg[ byte[0] ]->OUTDR |=  (0x01 << byte[1]);
+ 1da:	400117b7          	lui	a5,0x40011
+ 1de:	40078793          	addi	a5,a5,1024 # 40011400 <_eusrstack+0x20010c00>
+ 1e2:	47d8                	lw	a4,12(a5)
+ 1e4:	08076713          	ori	a4,a4,128
+ 1e8:	c7d8                	sw	a4,12(a5)
+		gpio_port_reg[ byte[0] ]->OUTDR &= ~(0x01 << byte[1]);
+ 1ea:	47d8                	lw	a4,12(a5)
+ 1ec:	f7f77713          	andi	a4,a4,-129
+ 1f0:	b7e5                	j	1d8 <main+0x4c>
+	...
