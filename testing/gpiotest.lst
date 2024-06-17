@@ -62,7 +62,7 @@ Disassembly of section .text:
   da:	c110                	sw	a2,0(a0)
   dc:	0511                	addi	a0,a0,4
   de:	feb54ee3          	blt	a0,a1,da <handle_reset+0x3a>
-  e2:	1e400513          	li	a0,484
+  e2:	21400513          	li	a0,532
   e6:	20000597          	auipc	a1,0x20000
   ea:	f1a58593          	addi	a1,a1,-230 # 20000000 <_data_vma>
   ee:	20000617          	auipc	a2,0x20000
@@ -97,7 +97,7 @@ Disassembly of section .text:
  132:	400217b7          	lui	a5,0x40021
  136:	01080737          	lui	a4,0x1080
  13a:	0007a223          	sw	zero,4(a5) # 40021004 <_eusrstack+0x20020804>
- 13e:	08170713          	addi	a4,a4,129 # 1080081 <lib_GPIOCTRL.c.d451e138+0x107e15e>
+ 13e:	08170713          	addi	a4,a4,129 # 1080081 <lib_GPIOCTRL.c.ad20764c+0x107dc0c>
  142:	c398                	sw	a4,0(a5)
  144:	009f0737          	lui	a4,0x9f0
  148:	c798                	sw	a4,8(a5)
@@ -174,20 +174,43 @@ int main()
  1ce:	4298                	lw	a4,0(a3)
  1d0:	00876713          	ori	a4,a4,8
  1d4:	c298                	sw	a4,0(a3)
-	// Make array of uint8_t from [pin] enum. See definition for details
 	uint8_t *byte = (uint8_t *)&pin;
 
-	uint32_t mask = 0x01 << (byte[1] + (16 * state));
+	uint32_t mask = 0x01 << byte[1];          // Shift by pin number
+	if(state == GPIO_LOW) mask = mask << 16;  // Shift by 16 if LOW, to Reset
 
 	gpio_port_reg[ byte[0] ]->BSHR = mask;
- 1d6:	4705                	li	a4,1
+ 1d6:	6741                	lui	a4,0x10
  1d8:	ca98                	sw	a4,16(a3)
- 1da:	02000713          	li	a4,32
- 1de:	cb98                	sw	a4,16(a5)
+ 1da:	02000693          	li	a3,32
+ 1de:	00200737          	lui	a4,0x200
+ 1e2:	cb94                	sw	a3,16(a5)
+ 1e4:	cb98                	sw	a4,16(a5)
+ 1e6:	cb94                	sw	a3,16(a5)
+ 1e8:	cb98                	sw	a4,16(a5)
+ 1ea:	cb94                	sw	a3,16(a5)
+ 1ec:	cb98                	sw	a4,16(a5)
+ 1ee:	cb94                	sw	a3,16(a5)
+ 1f0:	cb98                	sw	a4,16(a5)
+ 1f2:	cb94                	sw	a3,16(a5)
+ 1f4:	cb98                	sw	a4,16(a5)
+ 1f6:	cb94                	sw	a3,16(a5)
+ 1f8:	cb98                	sw	a4,16(a5)
+ 1fa:	cb94                	sw	a3,16(a5)
+ 1fc:	cb98                	sw	a4,16(a5)
+ 1fe:	cb94                	sw	a3,16(a5)
+ 200:	cb98                	sw	a4,16(a5)
+ 202:	cb94                	sw	a3,16(a5)
+ 204:	cb98                	sw	a4,16(a5)
+ 206:	cb94                	sw	a3,16(a5)
+ 208:	cb98                	sw	a4,16(a5)
+ 20a:	cb94                	sw	a3,16(a5)
+ 20c:	cb98                	sw	a4,16(a5)
+ 20e:	cb94                	sw	a3,16(a5)
+ 210:	cb98                	sw	a4,16(a5)
 
 	gpio_set_mode(GPIO_PD5, OUTPUT_10MHZ_PP); 
 	gpio_set_mode(GPIO_PC0, INPUT_PULLDOWN); 
 
 	while(1)
- 1e0:	bffd                	j	1de <main+0x52>
-	...
+ 212:	bfc1                	j	1e2 <main+0x56>

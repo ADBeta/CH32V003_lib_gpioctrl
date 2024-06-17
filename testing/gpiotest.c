@@ -25,7 +25,6 @@ int main()
 		//uint8_t val = gpio_digital_read(GPIO_PC0);
 		
 		gpio_digital_write(GPIO_PD5, GPIO_HIGH);
-		/*
 		gpio_digital_write(GPIO_PD5, GPIO_LOW);
 		gpio_digital_write(GPIO_PD5, GPIO_HIGH);
 		gpio_digital_write(GPIO_PD5, GPIO_LOW);
@@ -49,7 +48,6 @@ int main()
 		gpio_digital_write(GPIO_PD5, GPIO_LOW);
 		gpio_digital_write(GPIO_PD5, GPIO_HIGH);
 		gpio_digital_write(GPIO_PD5, GPIO_LOW);
-		*/
 
 		//Delay_Ms(250);
 	}

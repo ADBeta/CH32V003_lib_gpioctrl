@@ -55,7 +55,8 @@ inline void gpio_digital_write(const gpio_pin_t pin, const gpio_state_t state)
 	// Make array of uint8_t from [pin] enum. See definition for details
 	uint8_t *byte = (uint8_t *)&pin;
 
-	uint32_t mask = 0x01 << (byte[1] + (16 * state));
+	uint32_t mask = 0x01 << byte[1];          // Shift by pin number
+	if(state == GPIO_LOW) mask = mask << 16;  // Shift by 16 if LOW, to Reset
 
 	gpio_port_reg[ byte[0] ]->BSHR = mask;
 }
