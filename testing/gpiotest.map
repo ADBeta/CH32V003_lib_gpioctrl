@@ -4,9 +4,9 @@ gpiotest.elf:     file format elf32-littleriscv
 SYMBOL TABLE:
 00000000 l    d  .init	00000000 .init
 000000a0 l    d  .text	00000000 .text
-000001f4 l    d  .fini	00000000 .fini
+000001e4 l    d  .fini	00000000 .fini
 20000000 l    d  .dalign	00000000 .dalign
-000001f4 l    d  .dlalign	00000000 .dlalign
+000001e4 l    d  .dlalign	00000000 .dlalign
 20000000 l    d  .data	00000000 .data
 20000000 l    d  .bss	00000000 .bss
 00000000 l    d  .riscv.attributes	00000000 .riscv.attributes
@@ -28,6 +28,7 @@ SYMBOL TABLE:
 00000000 g     F .init	0000009c InterruptVectorDefault
 20000000 g       .bss	00000000 _sbss
 00000000 g     F .init	0000009c InterruptVector
+00001f23  w      .debug_info	00000000 .hidden lib_GPIOCTRL.c.d451e138
 000000a0 g       .init	00000000 _einit
 0000011a g     F .text	00000002 SPI1_IRQHandler
 0000011a g     F .text	00000002 AWU_IRQHandler
@@ -35,7 +36,7 @@ SYMBOL TABLE:
 0000011a g     F .text	00000002 DMA1_Channel4_IRQHandler
 0000011a g     F .text	00000002 ADC1_IRQHandler
 20000000 g       .bss	00000000 _ebss
-00001c9e  w      .debug_info	00000000 .hidden gpiotest.c.12bb334b
+00001c99  w      .debug_info	00000000 .hidden gpiotest.c.12bb334b
 0000011a g     F .text	00000002 DMA1_Channel7_IRQHandler
 0000011a g     F .text	00000002 I2C1_EV_IRQHandler
 0000011a g     F .text	00000002 DMA1_Channel6_IRQHandler
@@ -45,13 +46,12 @@ SYMBOL TABLE:
 0000011a g     F .text	00000002 DefaultIRQHandler
 20000000 g       .dalign	00000000 _data_vma
 0000011c g     F .text	0000000e NMI_RCC_CSS_IRQHandler
-0000018c g     F .text	00000066 main
-00000ec8  w      .debug_info	00000000 .hidden ch32v003fun.c.30b4357d
+0000018c g     F .text	00000056 main
+00000ec3  w      .debug_info	00000000 .hidden ch32v003fun.c.30b4357d
 0000011a g     F .text	00000002 DMA1_Channel5_IRQHandler
 0000012a g     F .text	00000062 SystemInit
 00000000 g       .init	00000000 _sinit
 0000011a g     F .text	00000002 DMA1_Channel3_IRQHandler
-00001f28  w      .debug_info	00000000 .hidden lib_GPIOCTRL.c.83c12b6d
 0000011a g     F .text	00000002 TIM1_UP_IRQHandler
 0000011a g     F .text	00000002 WWDG_IRQHandler
 0000011a g     F .text	00000002 TIM2_IRQHandler
@@ -59,7 +59,7 @@ SYMBOL TABLE:
 0000011a g     F .text	00000002 SW_Handler
 0000011a g     F .text	00000002 TIM1_BRK_IRQHandler
 20000000 g       .data	00000000 _edata
-000001f4 g       .dlalign	00000000 _data_lma
+000001e4 g       .dlalign	00000000 _data_lma
 0000011a g     F .text	00000002 DMA1_Channel2_IRQHandler
 000000a0 g     F .text	0000007a handle_reset
 0000011a g     F .text	00000002 FLASH_IRQHandler

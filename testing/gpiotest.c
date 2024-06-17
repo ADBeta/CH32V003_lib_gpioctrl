@@ -17,15 +17,39 @@ int main()
 {
 	SystemInit();
 
-	gpio_set_mode(GPIO_PD7, OUTPUT_10MHZ_PP); 
+	gpio_set_mode(GPIO_PD5, OUTPUT_10MHZ_PP); 
 	gpio_set_mode(GPIO_PC0, INPUT_PULLDOWN); 
 
 	while(1)
 	{
 		//uint8_t val = gpio_digital_read(GPIO_PC0);
 		
-		gpio_digital_write(GPIO_PD7, GPIO_HIGH);
-		gpio_digital_write(GPIO_PD7, GPIO_LOW);
+		gpio_digital_write(GPIO_PD5, GPIO_HIGH);
+		/*
+		gpio_digital_write(GPIO_PD5, GPIO_LOW);
+		gpio_digital_write(GPIO_PD5, GPIO_HIGH);
+		gpio_digital_write(GPIO_PD5, GPIO_LOW);
+		gpio_digital_write(GPIO_PD5, GPIO_HIGH);
+		gpio_digital_write(GPIO_PD5, GPIO_LOW);
+		gpio_digital_write(GPIO_PD5, GPIO_HIGH);
+		gpio_digital_write(GPIO_PD5, GPIO_LOW);
+		gpio_digital_write(GPIO_PD5, GPIO_HIGH);
+		gpio_digital_write(GPIO_PD5, GPIO_LOW);
+		gpio_digital_write(GPIO_PD5, GPIO_HIGH);
+		gpio_digital_write(GPIO_PD5, GPIO_LOW);
+		gpio_digital_write(GPIO_PD5, GPIO_HIGH);
+		gpio_digital_write(GPIO_PD5, GPIO_LOW);
+		gpio_digital_write(GPIO_PD5, GPIO_HIGH);
+		gpio_digital_write(GPIO_PD5, GPIO_LOW);
+		gpio_digital_write(GPIO_PD5, GPIO_HIGH);
+		gpio_digital_write(GPIO_PD5, GPIO_LOW);
+		gpio_digital_write(GPIO_PD5, GPIO_HIGH);
+		gpio_digital_write(GPIO_PD5, GPIO_LOW);
+		gpio_digital_write(GPIO_PD5, GPIO_HIGH);
+		gpio_digital_write(GPIO_PD5, GPIO_LOW);
+		gpio_digital_write(GPIO_PD5, GPIO_HIGH);
+		gpio_digital_write(GPIO_PD5, GPIO_LOW);
+		*/
 
 		//Delay_Ms(250);
 	}

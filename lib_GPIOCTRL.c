@@ -55,10 +55,9 @@ inline void gpio_digital_write(const gpio_pin_t pin, const gpio_state_t state)
 	// Make array of uint8_t from [pin] enum. See definition for details
 	uint8_t *byte = (uint8_t *)&pin;
 
-	if(state == GPIO_HIGH)
-		gpio_port_reg[ byte[0] ]->OUTDR |=  (0x01 << byte[1]);
-	if(state == GPIO_LOW)
-		gpio_port_reg[ byte[0] ]->OUTDR &= ~(0x01 << byte[1]);
+	uint32_t mask = 0x01 << (byte[1] + (16 * state));
+
+	gpio_port_reg[ byte[0] ]->BSHR = mask;
 }
 
 /// @breif Reads the INDR Register of the specified pin and returns state
