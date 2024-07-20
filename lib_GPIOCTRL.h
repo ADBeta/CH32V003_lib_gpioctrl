@@ -72,6 +72,9 @@ typedef enum {
 	//
 	OUTPUT_2MHZ_PP     = 0x02,
 	OUTPUT_2MHZ_OD     = 0x06,
+	//
+	OUTPUT_PP_AF       = 0x08,
+	OUTPUT_OD_AF       = 0x0C,
 } gpio_mode_t;
 
 
