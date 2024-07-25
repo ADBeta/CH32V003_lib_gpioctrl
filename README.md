@@ -16,11 +16,8 @@ The main benefiet to this library is that it provides
 
 
 ## TODO
-* Analog Read
 * Analog Write
-* Speed tests
-* Profile and optimise footprint
-
+* Analog Read Example
 
 ----
 ADBeta (c)    2024
