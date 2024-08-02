@@ -6,7 +6,7 @@
 *
 * ADBeta (c) 2024
 ******************************************************************************/
-#include "lib_GPIOCTRL.h"
+#include "lib_gpioctrl.h"
 
 #include <stdint.h>
 

@@ -1,59 +1,32 @@
-Analog Read Registers etc
+PA1 - IN-
+PA2 - IN+
 
-###############################################################################
-	INPUTS:
-		Vref -> ADC_IN8
-		Vcal -> ADC_IN9
+PD4 - OUT
+PD4 Analog input directly????
 
-###############################################################################
-	ACD_CTRLR2 -> ADON bit, 1=ON
+Op Amp very non-linear. Need to test more. 
+Seems lower gain = better stability.
+Higher current draw seems to provide better stability
 
-	ADC Sample is done via HBBUS CLK. ADCLK is configured via
-	RCC_CFGR0 -> ADCPRE : ADC Prescaler clock
-
-###############################################################################
-
-	Rule Group:: Regular mode
-	ADC_RSQRx Registers. including converstion samples per read
-
-	Injection Group:: High Priority (interrupted?) mode
-	ADC_ISRQ Register, including samples per read etc 
-
-###############################################################################
-	Calibration mode
-	Set ADC_CTRL2 -> RSTCAL to 1, wait for CPU to clear it to 0 again
-	Calibration data is then stored in ADC_RDATAR
-
-	ACD **MUST** be powered on for at least 2 cycles before Calibrating.
-	Do a cal when ADC is powered on 
-	`if(ADCON == 0) ADCON = 1; ACD_RSTCAL;`
-
-###############################################################################
-	Sampling time is defined by number of Clk cycles each sample takes, * the
-	ACD CLK Frequency.
-	`TIME_CONV = SAMPLE_TIME + (11 * ADC_CLK)'
-
-	Set SMPx[2:0] in ADC_SAMPTR1 and ADC_SAMPTR2 to configure this
-
-###############################################################################
-	Can set DMA So when the data conversion is done, data in ADC_RDATAR Register
-	is moved automatically to the users choice of mem address
-
-###############################################################################
-	Data can be left or right aligned in 10bit mode
-	ADC_CTLR2 -> ALIGN
-
-###############################################################################
-	Data is output to ADC_RDATAR Register for Rule Group
-	Data is output to ADC_IDATAR Register in Injection Group, minus offset from
-	ADC_IOFRx Register
-
-###############################################################################
-	ADC Conversions can be triggered by interrupts - 
-	ADC_CTLR2 -> EXTTRIG or JEXTTRIG Bits, for Rule or Injection Group respectively
+Aim for 20x, 10x if unstable
 
 
+470/4k7 - 11x gain - 0.65mA
+Input Voltage, Board 1 Output Voltage, Board 1 Gain, Board 2 Output Voltage, Board 2 Gain
+0.05,     0.64, 12.8,    0.54, 10.8
+0.10,     1.18, 11.8,    1.08, 10.8
+0.15,     1.75, 11.6,    1.63, 10.8
+0.20,     2.28, 11.4,    2.18, 10.9
+0.25,     2.82, 11.3,    2.72, 10.9
+0.28,     3.15, 11.2,    3.05, 10.9
 
-
-
-Pick up from page 75
+220/4k7 - 22.3 gain - 0.67mA
+Input Voltage, Board 1 Output Voltage, Board 1 Gain, Board 2 Output Voltage, Board 2 Gain
+0.01,    0.40, 40.0,    0.24, 24.0
+0.02,    0.61, 30.0,    0.42, 21.0
+0.04,    1.05, 26.2,    0.86, 21.5
+0.06,    1.48, 24.6,    1.30, 21.6
+0.08,    1.95, 24.3,    1.75, 21.9
+0.10,    2.38, 23.8,    2.19, 21.9
+0.12,    2.82, 23.5,    2.63, 21.9
+0.13     3.02, 23.2,    2.85, 21.9

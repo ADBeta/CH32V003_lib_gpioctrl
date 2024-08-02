@@ -5,7 +5,7 @@ EXTRALIB_DIR := $(TOOLKIT_DIR)/extralibs
 # Project name
 TARGET := gpiotest
 
-LIB_SRC := ../lib_GPIOCTRL.c
+LIB_SRC := ../lib_gpioctrl.c
 
 # Change this to specify your MCU model, for compilation
 TARGET_MCU := CH32V003

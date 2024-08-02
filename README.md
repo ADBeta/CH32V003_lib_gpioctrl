@@ -1,23 +1,20 @@
-# CH32V003_lib_GPIOCTRL
+# CH32V003_lib_gpioctrl
 
 ## **NOTE:** This library is currently only tested and built for the CH32V003.  
 Other variants of the CH32Vxxx MCU Family have not been tested or considered
 yet.  
 
-lib_GPIOCTRL is a library to add runtime GPIO Suppor, much like the Arduino
-system.  
-This library may use more flash, and may be marginally slower than the 
-`ch32v003fun` GPIO control in rare cases, but it is overall very comparable in
-speed - Speed tests are available below.  
+lib_gpioctrl provides `digital_read`, `digital_write` and `analog_read` 
+funtionality at runtime, meaning you can redefine pins on the fly 
+programtically.  
+This should feel very familiar to anyone who has used things like Arduino in the
+past.  
 
-## Why Use This Library
-The main benefiet to this library is that it provides 
-
-
-
-## TODO
-* Analog Write
-* Analog Read Example
+`digital_write` runs at full speed, no different to doing it in bare-metal  
+`digital_read` runs as fast as the CPU will allow - no solid tests done yet  
+`analog_read` runs in polled mode, with selectable samples per cycle and 
+selectable input clock frequency. Speed of this funciton will depend on user
+settings when using `gpio_init_adc()`
 
 ----
 ADBeta (c)    2024
