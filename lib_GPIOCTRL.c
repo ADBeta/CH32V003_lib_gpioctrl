@@ -1,8 +1,8 @@
 /******************************************************************************
-* lib_GPIOCTRL
+* lib_gpioctrl
 * A runtime-capable GPIO Library, with Digital Read/Write and Analog Read
 *
-* See GitHub for details: https://github.com/ADBeta/CH32V003_lib_GPIOCTRL
+* See GitHub for details: https://github.com/ADBeta/CH32V003_lib_gpioctrl
 *
 * ADBeta (c) 2024
 ******************************************************************************/
