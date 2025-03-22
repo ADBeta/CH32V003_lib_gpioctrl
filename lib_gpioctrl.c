@@ -4,7 +4,7 @@
 *
 * See GitHub for details: https://github.com/ADBeta/CH32V003_lib_gpioctrl
 *
-* ADBeta (c) 2024
+* ADBeta (c) 2024 - 2025
 ******************************************************************************/
 #include "lib_gpioctrl.h"
 
@@ -94,6 +94,10 @@ void gpio_init_adc(const ADC_CLOCK_DIV div, const ADC_SAMPLE_CYCLES cycles)
 	// Reset calibration, wait for it to finish
 	GPIO_ADC1->CTLR2 |= ADC_RSTCAL;
 	while(GPIO_ADC1->CTLR2 & ADC_RSTCAL);
+
+	// Calibrate the ADC, want for it to finish
+	GPIO_ADC1->CTLR2 |= ADC_CAL;
+	while(GPIO_ADC1->CTLR2 & ADC_CAL);
 }
 
 __attribute__((always_inline))

@@ -4,7 +4,7 @@
 *
 * See GitHub for details: https://github.com/ADBeta/CH32V003_lib_gpioctrl
 *
-* ADBeta (c)    Aug 2024    Ver 1.2.0
+* ADBeta (c)    22 Mar 2025    Ver 1.3.0
 ******************************************************************************/
 #ifndef LIB_GPIOCTRL_H
 #define LIB_GPIOCTRL_H
@@ -217,6 +217,7 @@ extern GPIO_PORT_REG_TypeDef *GPIO_PORT_MAP[4];
 // ADC
 #define ADC_EOC              ((uint8_t)0x02)
 #define ADC_ADON             ((uint32_t)0x00000001)
+#define ADC_CAL              ((uint32_t)0x00000004)
 #define ADC_RSTCAL           ((uint32_t)0x00000008)
 #define ADC_EXTSEL           ((uint32_t)0x000E0000)
 #define ADC_SWSTART          ((uint32_t)0x00400000)
