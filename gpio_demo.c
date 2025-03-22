@@ -2,9 +2,10 @@
 * lib_gpioctrl demonstation and test ground
 * Provides examples of Digital Read/Write, and Analog Read
 *
-* ADBeta (c)    02 Aug 2024
+* V2.0 - Converted from ch32v003fun to ch32fun
+* ADBeta (c)    22 Mar 2025
 ******************************************************************************/
-#include "ch32v003fun.h"
+#include "ch32fun.h"
 #include <stdio.h>
 
 #include "lib_gpioctrl.h"
