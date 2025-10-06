@@ -215,8 +215,8 @@ extern GPIO_PORT_REG_TypeDef *GPIO_PORT_MAP[4];
 #define RCC_APB2PCENR_IOPxEN ((uint32_t)0x00000004)
 #define RCC_APB2Periph_ADC1  ((uint32_t)0x00000200)
 // ADC
-#define ADC_EOC              ((uint8_t)0x02)
 #define ADC_ADON             ((uint32_t)0x00000001)
+#define ADC_EOC              ((uint32_t)0x00000002)
 #define ADC_CAL              ((uint32_t)0x00000004)
 #define ADC_RSTCAL           ((uint32_t)0x00000008)
 #define ADC_EXTSEL           ((uint32_t)0x000E0000)

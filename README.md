@@ -1,9 +1,5 @@
 # CH32V003_lib_gpioctrl
 
-## **NOTE:** This library is currently only tested and built for the CH32V003.  
-Other variants of the CH32Vxxx MCU Family have not been tested or considered
-yet.  
-
 lib_gpioctrl provides `digital_read`, `digital_write` and `analog_read` 
 funtionality at runtime, meaning you can redefine pins on the fly 
 programtically.  
@@ -17,5 +13,5 @@ selectable input clock frequency. Speed of this funciton will depend on user
 settings when using `gpio_init_adc()`
 
 ----
-MIT License
+MIT License  
 Copyright (c) 2024 - 2025 ADBeta
