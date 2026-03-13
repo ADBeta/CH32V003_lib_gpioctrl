@@ -4,13 +4,18 @@
 *
 * See GitHub for details: https://github.com/ADBeta/CH32V003_lib_gpioctrl
 *
-* ADBeta (c)    22 Mar 2025    Ver 1.3.0
+* ADBeta (c)    26 Jan 2026    Ver 1.4.0
 ******************************************************************************/
 #ifndef LIB_GPIOCTRL_H
 #define LIB_GPIOCTRL_H
 
 #include <stdint.h>
 #include <stddef.h>
+
+#define GPIO_ADC_MAXIMUM           1023   // Maximum ADC Value
+#define GPIO_ADC_REF_MV            1200   // Internal VREF Voltage (mV)
+
+
 
 /*** GPIO Pin Enumeration ****************************************************/
 /// @breif This enum is used as binary data for pin and port addressing. 
@@ -67,6 +72,7 @@ typedef enum {
 	#endif
 } GPIO_PIN;
 
+
 /// @breif analog input pins, sorted by channel
 typedef enum {
 	GPIO_ADC_A0	     = 0x00,
@@ -80,6 +86,7 @@ typedef enum {
 	GPIO_ADC_VREF	 = 0x08,
 	GPIO_ADC_VCAL	 = 0x09,
 } GPIO_ANALOG_CHANNEL;
+
 
 
 /*** GPIO Pin Mode Enumeration ***********************************************/
@@ -101,6 +108,8 @@ typedef enum {
 	OUTPUT_PP_AF	   = 0x08,
 	OUTPUT_OD_AF	   = 0x0C,
 } GPIO_MODE;
+
+
 
 /*** ADC Setting Enumeration *************************************************/
 /// @breif a sample of ADC clock division settings (Bits 15:11 in RCC->CFGR0)
@@ -124,12 +133,15 @@ typedef enum {
 	ADC_SAMPLE_CYCLES_241  = (uint32_t)0x3FFFFFFF,
 } ADC_SAMPLE_CYCLES;
 
+
+
 /*** GPIO Output State Enumerations ******************************************/
 /// @breif GPIO Pin State Enum, simple implimentation of a HIGH/LOW System
 typedef enum {
 	GPIO_LOW	       = 0x00,
 	GPIO_HIGH	       = 0x01,
 } GPIO_STATE;
+
 
 
 /*** Registers for GPIO Port *************************************************/
@@ -144,6 +156,7 @@ typedef struct {
 	volatile uint32_t BCR;	  // Port Reset Register
 	volatile uint32_t LCKR;   // Lock Register
 } GPIO_PORT_REG_TypeDef;
+
 
 /// @breif ADC Register. Directly Maps to Memory starting at R32_ADC_STATR
 typedef struct {
@@ -170,6 +183,7 @@ typedef struct {
 	volatile uint32_t DLYR;     // ADC delayed data register 
 } ADC_REG_TypeDef;
 
+
 /// @breif RCC Port Register. Directly Maps to Memory starting at R32_RCC_CTLR
 typedef struct {
 	volatile uint32_t CTLR;	      // Clock control register
@@ -184,6 +198,15 @@ typedef struct {
 	volatile uint32_t RSTSCKR;	  // Control/status register
 } RCC_REG_TypeDef;
 
+
+/// @brief EXTEN External Register (OpAmp)
+typedef struct
+{
+	volatile uint32_t EXTEN_CTR;
+} EXTEN_REG_TypeDef;
+
+
+
 /*** Register Address Definitions ********************************************/
 // Base Registers
 #define PORTA_GPIO_REGISTER_BASE 0x40010800
@@ -193,9 +216,10 @@ typedef struct {
 #define PORTD_GPIO_REGISTER_BASE 0x40011400
 #define ADC1_REGISTER_BASE	     0x40012400
 #define RCC_REGISTER_BASE	     0x40021000
+#define EXTEN_REGISTER_BASE      0x40023800
+
 
 // Register typedef Declarations
-
 #define GPIO_PORTA ((GPIO_PORT_REG_TypeDef *)PORTA_GPIO_REGISTER_BASE)
 // NOTE: PORTB is not available for the CH32V003.
 #define GPIO_PORTB ((GPIO_PORT_REG_TypeDef *)PORTB_GPIO_REGISTER_BASE)
@@ -203,11 +227,14 @@ typedef struct {
 #define GPIO_PORTD ((GPIO_PORT_REG_TypeDef *)PORTD_GPIO_REGISTER_BASE)
 #define GPIO_ADC1  ((ADC_REG_TypeDef *)ADC1_REGISTER_BASE)
 #define GPIO_RCC   ((RCC_REG_TypeDef *)RCC_REGISTER_BASE)
+#define GPIO_EXTEN ((EXTEN_REG_TypeDef*)EXTEN_REGISTER_BASE)
 
 /// @breif The GPIO Ports are places into an array for easy indexing in the
 /// GPIO Functions
 /// NOTE: Only 3 PORTs are usable in the CH32V003, 4 for other MCUs
 extern GPIO_PORT_REG_TypeDef *GPIO_PORT_MAP[4]; 
+
+
 
 /*** Register Known Values ***************************************************/
 // RCC
@@ -222,12 +249,51 @@ extern GPIO_PORT_REG_TypeDef *GPIO_PORT_MAP[4];
 #define ADC_EXTSEL           ((uint32_t)0x000E0000)
 #define ADC_SWSTART          ((uint32_t)0x00400000)
 
-/*** GPIO Mode Setting *******************************************************/
-/// @breif Sets the Config and other needed Registers for a passed pin and mode
+
+
+/*** OpAmp Variables and Types ***********************************************/
+#define GPIO_EXTEN_OPA_PSEL  ((uint32_t)0x00040000)
+#define GPIO_EXTEN_OPA_NSEL  ((uint32_t)0x00020000)
+#define GPIO_EXTEN_OPA_EN    ((uint32_t)0x00010000)
+
+
+/// @brief OpAmp Positive Channel Inputs
+typedef enum {
+	GPIO_OPAMP_CH1_POS,
+	GPIO_OPAMP_CH2_POS
+} GPIO_OPAMP_CH_POS;
+
+
+/// @brief OpAmp Negative Channel Inputs
+typedef enum {
+	GPIO_OPAMP_CH1_NEG,
+	GPIO_OPAMP_CH2_NEG
+} GPIO_OPAMP_CH_NEG;
+
+
+
+/*** GPIO Configuration ******************************************************/
+/// @breif Configure the passed GPIO pin to the given mode
 /// @param GPIO_PIN pin, the GPIO Pin & Port Variable (e.g GPIO_PD6)
 /// @param GPIO_MODE mode, the GPIO Mode Variable (e.g OUTPUT_10MHZ_PP)
 /// @return None
 void gpio_set_mode(const GPIO_PIN pin, const GPIO_MODE mode);
+
+
+/// @brief Enables the internal OpAmp
+/// @param None
+/// @return None
+void gpio_init_opamp(void);
+
+
+/// @brief Configure the internal OpAmp to use the given POS and NEG Inputs
+/// @param GPIO_OPAMP_CH_POS, Positive input to use
+/// @param GPIO_OPAMP_CH_NEG, Negative input to use
+/// @return None
+void gpio_set_opamp_inputs(const GPIO_OPAMP_CH_POS pos, 
+						   const GPIO_OPAMP_CH_NEG neg);
+
+
 
 /*** Digital Write/Read ******************************************************/
 /// @breif Sets the OUTDR Register for the passed Pin
@@ -236,10 +302,12 @@ void gpio_set_mode(const GPIO_PIN pin, const GPIO_MODE mode);
 /// @return None
 void gpio_digital_write(const GPIO_PIN pin, const GPIO_STATE state);
 
+
 /// @breif Reads the INDR Register of the specified pin and returns state
 /// @param GPIO_PIN pin, the GPIO Pin & Port Variable (e.g GPIO_PD6)
 /// @return GPIO_STATE, the current state of the pin, (e.g GPIO_HIGH)
 GPIO_STATE gpio_digital_read(const GPIO_PIN pin);
+
 
 /// @breif initialises the ADC registers, sets polling mode, and calibrates
 /// @param ADC_CLOCK_DIV, ADC Clock Divisor
@@ -247,11 +315,18 @@ GPIO_STATE gpio_digital_read(const GPIO_PIN pin);
 /// @retun none
 void gpio_init_adc(const ADC_CLOCK_DIV div, const ADC_SAMPLE_CYCLES cycles);
 
+
 /// @breif Reads the specified pin, only if it is one of the analog inputs
 /// @param GPIO_ANALOG_CHANNEL chan, the Analog GPIO Channel to read
 /// @return uint16_t 10-bit Analog Value
 /// NOTE: This function uses the polled adc method, which is slow compared to
 /// injection mode multi-channel reads
 uint16_t gpio_analog_read(const GPIO_ANALOG_CHANNEL chan);
+
+
+/// @brief Reads the internal System Voltage in mv and returns it
+/// @param None
+/// @return uin16_t, System Voltage in mV
+uint16_t gpio_read_system_mv(void);
 
 #endif

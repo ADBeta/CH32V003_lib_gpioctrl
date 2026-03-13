@@ -4,11 +4,11 @@
 *
 * See GitHub for details: https://github.com/ADBeta/CH32V003_lib_gpioctrl
 *
-* ADBeta (c) 2024 - 2025
+* ADBeta (c) 2024-2026
 ******************************************************************************/
 #include "lib_gpioctrl.h"
-
 #include <stdint.h>
+
 
 GPIO_PORT_REG_TypeDef *GPIO_PORT_MAP[4] = {
 	GPIO_PORTA,
@@ -35,6 +35,27 @@ void gpio_set_mode(const GPIO_PIN pin, const GPIO_MODE mode)
 	// If [mode] is INPUT_PULLUP or INPUT_PULLDOWN, set the [OUTDR] Register
 	if(mode == INPUT_PULLUP || mode == INPUT_PULLDOWN)
 		gpio_digital_write(pin, mode >> 4);
+}
+
+
+void gpio_init_opamp(void)
+{
+	GPIO_EXTEN->EXTEN_CTR |= GPIO_EXTEN_OPA_EN;
+}
+
+
+void gpio_set_opamp_inputs(const GPIO_OPAMP_CH_POS pos, 
+						   const GPIO_OPAMP_CH_NEG neg)
+{
+	// Positive Input
+	GPIO_EXTEN->EXTEN_CTR =
+		(GPIO_EXTEN->EXTEN_CTR & ~GPIO_EXTEN_OPA_PSEL) |
+		((pos == GPIO_OPAMP_CH2_POS) ? GPIO_EXTEN_OPA_PSEL : 0);
+
+	// Negative Input
+	GPIO_EXTEN->EXTEN_CTR =
+		(GPIO_EXTEN->EXTEN_CTR & ~GPIO_EXTEN_OPA_NSEL) |
+		((neg == GPIO_OPAMP_CH2_NEG) ? GPIO_EXTEN_OPA_NSEL : 0);
 }
 
 
@@ -100,6 +121,7 @@ void gpio_init_adc(const ADC_CLOCK_DIV div, const ADC_SAMPLE_CYCLES cycles)
 	while(GPIO_ADC1->CTLR2 & ADC_CAL);
 }
 
+
 __attribute__((always_inline))
 inline uint16_t gpio_analog_read(const GPIO_ANALOG_CHANNEL chan)
 {
@@ -113,4 +135,17 @@ inline uint16_t gpio_analog_read(const GPIO_ANALOG_CHANNEL chan)
 
 	// Get the resulting data from the ADC
 	return GPIO_ADC1->RDATAR;
+}
+
+
+uint16_t gpio_read_system_mv(void)
+{
+	// Get the raw ADC Value for the VREF - shift by 10 (*1024),
+	// then divide it by the ADC maximum.
+	// This is the VREF Multiplier
+	uint32_t vref_multiplier = ((uint32_t)GPIO_ADC_MAXIMUM << 10) / gpio_analog_read(GPIO_ADC_VREF);
+
+	// The mV value is equal to the ADC_VREF Millivolts, multiplied by the VREF
+	// Multiplier, then shifted by 10 (/1024) to scale back down to mV
+	return (GPIO_ADC_REF_MV * vref_multiplier) >> 10;
 }
